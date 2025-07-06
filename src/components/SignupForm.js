@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { API_BASE_URL } from "../config"; // Adjust the path if needed
 
 export default function SignupForm({ onOtpSent }) {
   const [formData, setFormData] = useState({
@@ -9,7 +10,6 @@ export default function SignupForm({ onOtpSent }) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Handle input changes
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -17,24 +17,22 @@ export default function SignupForm({ onOtpSent }) {
     });
   };
 
-  // Submit signup form
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:3000/signup", {
+      const response = await fetch(`${API_BASE_URL}/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include", // important to keep session cookies
+        credentials: "include",
         body: JSON.stringify(formData),
       });
 
       if (response.ok) {
-        // Server returns HTML (EJS), so we'll just assume OTP is sent if 200 OK
         onOtpSent({
           email: formData.email,
           username: formData.username,
@@ -108,7 +106,7 @@ export default function SignupForm({ onOtpSent }) {
       <p className="mt-4 text-center text-sm">
         Already have an account?{" "}
         <button
-          onClick={() => onOtpSent(null)} // Tell parent to show login
+          onClick={() => onOtpSent(null)}
           className="text-blue-500 hover:underline"
         >
           Log in
